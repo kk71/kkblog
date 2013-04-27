@@ -1,0 +1,10 @@
+<%doc>
+用于回复评论的
+</%doc>
+${blog_name}（${blog_url}）的博主${blog_owner}在你的留言中回复道：
+
+${reply_content}
+
+=============原文=============
+${reply_refered}
+${datetime}

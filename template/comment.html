@@ -1,0 +1,63 @@
+<%doc>
+kkblog comment block
+
+csrf_token=
+comment_brand=
+atcle_id=(若为None则说明无关联博文)
+</%doc>
+
+<form id="comment">
+	<input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
+	<div>
+		<p id="comment_brand">${comment_brand}</p>
+	</div>
+	<div>
+		<label>昵称 <span class="required">*</span></label>
+		<input name="name" type="text" id="comment_name" value="">
+	</div>
+	<div>
+		<label>Email（不会被公开）</label>
+		<input name="email" type="text" id="comment_email" value="">
+	</div>
+	<div>
+		<label>个人网站</label>
+		<input name="website" type="text" id="comment_website" value="">
+	</div>
+	<div>
+		<label>内容 <span class="required">*</span></label>
+		<textarea name="message" rows="9" cols="66" id="comment_message"></textarea><br>
+	</div>
+	<div class="no-border">
+		<input type="button" value="提交" class="button" id="comment_send" data-loading-text="Loading...">
+		<input id="giveup_reply" type="button" value="放弃回复" style="display:none;" class="button">
+	</div>
+</form>
+<script type="text/javascript">
+var comment_brand="${comment_brand}";
+var refered_comment;//the id to the refered comment
+
+function reply_comment(comment_id,comment_nickname,article_id)
+{
+	$("#comment_brand").text("回复"+comment_nickname+"的评论");
+	refered_comment=comment_id;
+	$("#giveup_reply").css("display","inline");
+}
+
+$(document).ready(function(){
+	$("#comment_send").click(function(){
+		%if atcle_id==None:
+			if(refered_comment==null || refered_comment==null)comment_commit();
+			else comment_commit(null,refered_comment);
+		%else:
+			if(refered_comment==null || refered_comment==null)comment_commit(${atcle_id});
+			else comment_commit(${atcle_id},refered_comment);
+		%endif
+	});
+
+	$("#giveup_reply").click(function(){
+		$("#comment_brand").text(comment_brand);
+		refered_comment=null;
+		$("#giveup_reply").css("display","none");
+	});
+})
+</script>

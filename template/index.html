@@ -1,0 +1,71 @@
+<%inherit file="base.html"/>
+<%doc>
+kkblog index page
+
+sub-blocks:
+
+include:
+pagination.html
+
+</%doc>
+
+
+<%block name="featured">
+<%doc>
+featured_title="无聊的生活环境啊哈哈"
+featured_content='''无聊的生活环境啊哈哈觉得撒谎房间速度和估计是个健康虽然红色的尽快回复就看过 会告诉对方就看过后个感觉司法很高的尽快个脚后跟和脚后跟尽快发好几个啊各位；瑞哦 送的尽快跟胆红素根据客户我关乎诶v回哦的人中个i哦；人家哦更好i送哦对方后公司方式共和国i虽然 估计是个瑞哦i个哦后过生日了更好i哦啊哦 '''
+featured_img=
+</%doc>
+<div id="featured-wrap"><article id="featured" class="clearfix">
+    <div class="image-block">
+        <a><img src="${featured_img}" /></a>
+    </div>
+
+    <div class="text-block">
+        <h2><a>${featured_title}</a></h2>
+        <p class="post-meta"></p>
+
+        ${featured_content}
+    </div>
+</article></div>
+
+</%block>
+
+
+<%block name="contentbody">
+<%
+from blog.tmpl_preprocess import article_stable_url,article_stable_comment,archive_url
+%>
+<%doc>
+display_list=[{"id":1,"title":"客户我关乎","datetime":"2013.3,16","comments":1,"tags":[],"category":"","thumbnail_plain":'',"content":""},]
+display_list+=display_list
+display_list+=[display_list[1]]
+show_featured==
+</%doc>
+%if show_featured==True:
+        <h3 id="latest">最近博文</h3>
+%endif
+
+%if len(display_list)==0:
+		<h5>没有博文…</h5>
+%else:
+	%for i in display_list:
+        <article class="col">
+            <div class="top">
+               <h3><a href="${article_stable_url(i["id"])}">${i["title"]}</a></h3>
+               <p><a href="${archive_url(i["datetime"].year,i["datetime"].month)}"><span class="datetime">${i["datetime"].year}年${i["datetime"].month}月${i["datetime"].day}日</span></a><a class="comment" href="${article_stable_comment(i["id"])}">${len(i["comments"])}条评论</a></p>
+            </div>
+            <div class="content">
+            	<p>${i["content"][:i["thumbnail_length"]]}</p>
+
+				<p><a href="${article_stable_url(i["id"])}" class="more" >继续阅读 »</a></p>
+			</div>
+        </article>
+        <br><br><br>
+        <div class="fix"></div>
+    %endfor
+        <div class="fix"></div>
+
+        <%include file="pagination.html" />
+%endif
+</%block>

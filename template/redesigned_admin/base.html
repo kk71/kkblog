@@ -1,0 +1,36 @@
+<%doc>
+admin management page redesigned by kk
+this template is built under django-grappelli admin tool
+
+sub-block:
+    content
+</%doc>
+<!DOCTYPE html>
+<html lang="Chinese - China">
+<head>
+	<title>${title} - kkblog Management</title>
+	<meta charset="utf-8">
+	<meta name="robots" content="NONE,NOARCHIVE">
+
+	<!--jquery2-->
+	<script src="/static/jquery/jquery.min.js" type="text/javascript"></script>
+
+	<!--kindeditor-->
+	<script type="text/javascript" src="/static/admin/kindeditor/kindeditor-all-min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/static/admin/kindeditor/lang/zh_CN.js"></script>
+
+	<!--bootstrap with no responsive-->
+	<link rel="stylesheet" type="text/css" href="/static/admin/bootstrap-full/bootstrap.min.css" />
+	<script type="text/javascript" src="/static/admin/bootstrap-full/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+<%block name="content"/>
+
+</div>
+
+</body>
+</html>
