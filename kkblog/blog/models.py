@@ -7,10 +7,6 @@ author:kK(fkfkbill@gmail.com)
 '''
 
 
-
-# python import
-import cgi#for xml escaping
-
 #django import
 from django.db import models
 from django.db.models import Count
@@ -106,6 +102,7 @@ class archive(models.Model):
 year:%s,
 month:%s,
 '''%(self.year,self.month)
+
 
 
 

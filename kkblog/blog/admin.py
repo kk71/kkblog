@@ -7,12 +7,8 @@ author:kK(fkfkbill@gmail.com)
 '''
 
 
-#python import
-import cgi
-
 #django import
-from django.http import HttpResponse,HttpResponseRedirect,HttpResponseNotFound
-from django import forms
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import admin
 
 #third-part import

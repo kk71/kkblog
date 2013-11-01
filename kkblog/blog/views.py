@@ -6,10 +6,6 @@ kkblog views
 author:kK(fkfkbill@gmail.com)
 '''
 
-#python import
-import pdb
-import sys,os
-
 #django import
 from django.http import HttpResponse,HttpResponseRedirect
 from django.db.models import Count

@@ -11,7 +11,6 @@ from django.conf.urls import patterns, include, url
 
 #third-part import
 import djangomako
-import grappelli
 
 #project import
 import settings

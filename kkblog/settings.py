@@ -8,10 +8,7 @@ author:kK(fkfkbill@gmail.com)
 
 
 import sys
-from os import environ
-local_path=sys.path[0]
 
-#django调试模式
 DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
@@ -34,40 +31,22 @@ DATABASES = {
     }
 }
 
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["*"]
 
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'Asia/Shanghai'
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'zh-CN'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
 USE_I18N = True
 
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
 USE_L10N = True
 
-# If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
 MEDIA_ROOT = ''
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
@@ -82,7 +61,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-	local_path+"/static/",
+	sys.path[0]+"/static/",
 )
 
 #where uploaded images stored
@@ -122,11 +101,10 @@ FILE_UPLOAD_HANDLERS = (
 
 ROOT_URLCONF = 'urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
-	local_path+"/template/",
+	sys.path[0]+"/template/",
 )
 
 INSTALLED_APPS = (
@@ -139,13 +117,10 @@ INSTALLED_APPS = (
 	"grappelli",
     'django.contrib.admin',
 	"blog",
+
+    "south",
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -172,7 +147,7 @@ LOGGING = {
 
 
 #==================================================
-#kkblog静态配置
+#kkblog配置
 
 #生产环境的域名（形如：http://*****，末尾不加/）
 domain_name=r""
@@ -198,19 +173,18 @@ email_p=r""#login password
 #首页每页显示的博文数目
 articles_per_page=8
 
-#留言、评论验证（即新评论默认隐藏）
+#新评论默认隐藏
 comment_verification=False
 
 #好友列表
 friend_list={
-		
+#    "显示名":"主页",
 }
 
 #背景音乐
 bgmusic={
+#    "显示名":"url",
 }
-
-
 
 #首页上显示置顶
 show_featured=False
