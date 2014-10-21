@@ -1,5 +1,8 @@
-'''
-kkblog
-'''
+from django.apps import AppConfig
 
-__version__=["1","0","0"]
+class app_config(AppConfig):
+    name="blog"
+    verbose_name="博客"
+
+
+default_app_config="blog.app_config"
