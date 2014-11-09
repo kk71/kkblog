@@ -804,6 +804,9 @@ header .search button.searchbtn {
 .footer-list ul li.weibo a {
     background: url(../images/social/weibo.png)  no-repeat  1px 9px;
 }
+.footer-list ul li.github a {
+    background: url(../images/social/github.png)  no-repeat  1px 9px;
+}
 /*end*/
 
 
@@ -1125,3 +1128,73 @@ margin-bottom: 10px;
     border: none;
     padding: 6px 9px 0px 9px;
 }
+
+/* derived from bootstrap's label */
+.tag {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 80%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+a.tag:hover,
+a.tag:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tag:empty {
+  display: none;
+}
+.btn .tag{
+  position: relative;
+  top: -1px;
+}
+.tag-default {
+  background-color: #777;
+}
+.tag-default[href]:hover,
+.tag-default[href]:focus {
+  background-color: #5e5e5e;
+}
+.tag-primary {
+  background-color: #428bca;
+}
+.tag-primary[href]:hover,
+.tag-primary[href]:focus {
+  background-color: #3071a9;
+}
+.tag-success {
+  background-color: #5cb85c;
+}
+.tag-success[href]:hover,
+.tag-success[href]:focus {
+  background-color: #449d44;
+}
+.tag-info {
+  background-color: #5bc0de;
+}
+.tag-info[href]:hover,
+.tag-info[href]:focus {
+  background-color: #31b0d5;
+}
+.tag-warning {
+  background-color: #f0ad4e;
+}
+.tag-warning[href]:hover,
+.tag-warning[href]:focus {
+  background-color: #ec971f;
+}
+.tag-danger {
+  background-color: #d9534f;
+}
+.tag-danger[href]:hover,
+.tag-danger[href]:focus {
+  background-color: #c9302c;
+}
+/* end of deriving from bootstrap's label */

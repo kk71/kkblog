@@ -1,0 +1,37 @@
+<%inherit file="base.html"/>
+
+<%block name="contentBody">
+
+## flatpage list
+%if len(displayList)==0:
+	<h5>没有文章…</h5>
+%else:
+	%for i in displayList:
+
+<article class="col">
+    <div class="top">
+        <h3>
+            <a href="${i.getUrl()}">
+                ${i.title}
+            </a>
+        </h3>
+        <p><a><span class="datetime">${i.createDatetime.strftime("%Y年%m月%d日")}</span></a></p>
+    </div>
+    <div class="content">
+        <p>${i.text}</p>
+
+        %if showLinkToOriginal:
+        <p><a href="${i.getUrl()}" class="more" >查看原文 »</a></p>
+        %endif
+    </div>
+</article>
+<br><br><br>
+<div class="fix"></div>
+
+    %endfor
+        <div class="fix"></div>
+
+    <%include file="pagination.html" />
+%endif
+
+</%block>

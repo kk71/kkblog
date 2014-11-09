@@ -1,64 +1,42 @@
 from django.db.models import Manager
 from django.db.models import Count
+from django.core.paginator import Paginator
 
 
-class music_list_manager(Manager):
-    def list(self):
-        '''
-        list all enabled music
-        '''
-        return
-
-
-class comment_manager(Manager):
+class commentManager(Manager):
     def list(self,
-             isolated,
-             article_id=None,
-             include_hide=False,
-             comment_per_result=9,
-             page=1
-    ):
+             articleId,
+             includeHide=False,
+             commentPerResult=999,
+             orphans=0):
         '''
         列出评论
         argument:
-            isolated:是独立留言还是对某文章的评论
-            article_id:当isolated=True时则此选项不需要，为对应博文的id
-            include_hide:包含隐藏（未通过审核）的评论？
-            comment_per_result:每次返回的条数
-            page:返回第几页
+            articleId:为对应博文的id
+            includeHide:包含隐藏（未通过审核）的评论
+            commentPerResult:每次返回的条数
+            orphans:paginator的孤立项。
         return:
-        返回一个列表包含每条评论
-        关联的博文仅包含其id
+        返回一个分页对象
         '''
-        if isolated == True:
-            cmt = self.objects.filter(
-                refered_article=None).order_by("-datetime")
-        else:
-            atcle = self.objects.get(id=article_id)
-            cmt = atcle.comments.order_by("-datetime")
-        if include_hide == False:
+        cmt = self.filter(article__id=articleId).order_by("-datetime")
+        if not includeHide:
             cmt = cmt.filter(shown=True)
-
-        if len(cmt) % comment_per_result == 0:
-            pages = len(cmt) // comment_per_result
-        else:
-            pages = len(cmt) // comment_per_result + 1
-        n = (page - 1) * comment_per_result
-        result = cmt[n:n + comment_per_result]
-
-        return result
+        return Paginator(
+            object_list=cmt.all(),
+            per_page=commentPerResult,
+            orphans=orphans
+        )
 
 
-class tag_manager(Manager):
+class tagManager(Manager):
     def list(self):
-        '''
-        罗列所有标签(默认按照从大到小)。
-        '''
-        return [i for i in self.objects.annotate(
+        '''罗列所有标签(默认按照从大到小)'''
+        return [i for i in self.annotate(
             article_count=Count("articles")
         ).order_by("-article_count")]
 
-    def list_with_articles(self,articles_to_list=3):
+    def listWithArticles(self,articlesToList=3):
         '''
         罗列所有标签，并罗列标签下的文章（篇数可选默认3）
         argument:
@@ -67,69 +45,67 @@ class tag_manager(Manager):
         标签名:文章列表（其中的文章是list）
         '''
         dic = []
-        for t in self.objects.list():
+        for t in self.list():
             dic.append((t.name,
-                [the_article for the_article in t.articles.order_by("-datetime")[:articles_to_list]]
+                [the_article for the_article in t.articles.order_by("-datetime")[:articlesToList]]
             ))
         return dic
 
 
-class article_manager(Manager):
+class articleManager(Manager):
     def list(self,
-             items_per_result=9,
-             page=1,
-             sort_by_frequency=False,
-             category_id=None,
-             archive_obj=None,
-             ):
+             itemsPerResult=9,
+             orphans=0,
+             sortByFrequency=False,
+             categoryId=None,
+             archiveObj=None,
+             stickyIncluded=False):
         '''
         罗列博文（排除shown==False的博文）
         argument:
-            sort_by_frequency:按照点击次数排序（默认False），否则就按日期排序
-            category_id:仅选取某个分类中的博文（None则为所有博文）
-            items_per_result:每次结果返回的博文数，默认9
-            page:哪一页。
-            archive_obj:归档对象，用于筛选出某个时段的文章
+            itemsPerResult:每次结果返回的博文数，默认9
+            orphans：最后一页允许的最少个数，默认为0
+            sortByFrequency:按照点击次数排序（默认False），否则就按日期排序
+            categoryId:仅选取某个分类中的博文（None则为所有博文）
+            archiveObj:归档对象，用于筛选出某个时段的文章
+            stickyIncluded:包含置顶的文章（默认不包含）
         return:
-            由article obj组成的序列
-            False:errors
+            Paginator object
         '''
-        if category_id == None:
-            at = self.objects
+        if categoryId is None:
+            at = self
         else:
-            ctgry = self.objects.get(id=category_id)
-            at = ctgry.articles
-        if sort_by_frequency == False:
-            atcls = at.filter(shown=True).order_by("-datetime")
+            at = self.filter(category_id=categoryId)
+        if sortByFrequency == False:
+            atcls = at.filter(shown=True).order_by("-createDatetime")
         else:
-            atcls = at.filter(shown=True).order_by("-access_frequency")
-        atcls = list(atcls)
-        if archive_obj != None:
-            for i in atcls:
-                if i not in archive_obj.articles.all():
-                    atcls.remove(i)
+            atcls = at.filter(shown=True).order_by("-accessFrequency")
+        if not stickyIncluded:
+            atcls = atcls.filter(sticky=False)
+        if archiveObj is not None:
+            atcls=atcls.filter(archive=archiveObj)
+        return Paginator(atcls,itemsPerResult, orphans)
 
-        r_start = items_per_result * (page - 1)
-        return atcls[r_start:r_start + items_per_result]
+    def listSticky(self):
+        '''罗列置顶的博文'''
+        return self.filter(sticky=True,shown=True).order_by("-createDatetime")
 
     def search(self,text):
-        '''
-        在标题和内容中搜索博文。
-        '''
+        '''在标题和内容中搜索博文。'''
         result = []
         labels = []
         for i in text.split(" "):
             if i.strip() != "":
                 labels.append(i)
-        for i in self.objects.all():
+        for i in self.all():
             for label in labels:
-                if label in i.title or label in i.thumbnail_plain:
+                if label in i.title or label in i.content:
                     result.append(i)
                     break
         return result
 
 
-class archive_manager(Manager):
+class archiveManager(Manager):
     def list(self,year=None, month=None):
         '''
         罗列所有归档(默认按照从新到旧)。
@@ -139,7 +115,7 @@ class archive_manager(Manager):
             list
         '''
         ar = []
-        for i in self.objects.order_by("-year", "-month"):
+        for i in self.order_by("-year", "-month"):
             if year == None and month == None:
                 ar.append(i)
             elif year != None and month == None:
@@ -149,3 +125,12 @@ class archive_manager(Manager):
                 if i.year == year and i.month == month:
                     ar.append(i)
         return ar
+
+    def getYears(self):
+        '''return years range'''
+        years=set()
+        for i in self.all():
+            years.add(i.year)
+        years=list(years)
+        years.reverse() # 取年份由近及远
+        return years

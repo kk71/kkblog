@@ -2,27 +2,47 @@
 
 <%block name="contentBody">
 
-%if len(display_list)==0:
+## sticky
+%if current==1:
+    %for i in stickyList:
+        ${itemIndex(i,sticky=True)}
+    %endfor
+    <div class="fix"></div>
+%endif
+
+## article list
+%if len(displayList)==0:
 	<h5>没有博文…</h5>
 %else:
 	%for i in displayList:
-        <article class="col">
-            <div class="top">
-               <h3><a href="${i.getUrl())}">${i.title}</a></h3>
-               <p><a href="${i.archive.getUrl()}"><span class="datetime">${i["datetime"].year}年${i["datetime"].month}月${i["datetime"].day}日</span></a><a class="comment" href="${article_stable_comment(i["id"])}">${len(i["comments"])}条评论</a></p>
-            </div>
-            <div class="content">
-            	<p>${i["content"][:i["thumbnail_length"]]}</p>
-
-				<p><a href="${article_stable_url(i["id"])}" class="more" >继续阅读 »</a></p>
-			</div>
-        </article>
-        <br><br><br>
-        <div class="fix"></div>
+        ${itemIndex(i,sticky=False)}
     %endfor
         <div class="fix"></div>
 
-        <%include file="pagination.html" />
+    <%include file="pagination.html" />
 %endif
+
+<%def name="itemIndex(i,sticky)">
+<article class="col">
+    <div class="top">
+        <h3>
+            <a href="${i.getUrl()}">
+                ${i.title}
+                %if sticky:
+                <p style="color: rgb(255,0,0); display: inline">【置顶】</p>
+                %endif
+            </a>
+        </h3>
+        <p><a href="${i.archive.getUrl()}"><span class="datetime">${i.createDatetime.year}年${i.createDatetime.month}月${i.createDatetime.day}日</span></a><a class="comment" href="${i.getUrl()}#comment">${len(i.comments.filter(shown=True).all())}条评论</a></p>
+    </div>
+    <div class="content">
+        <p>${i.getThumbnail()}</p>
+
+        <p><a href="${i.getUrl()}" class="more" >继续阅读 »</a></p>
+    </div>
+</article>
+<br><br><br>
+<div class="fix"></div>
+</%def>
 
 </%block>

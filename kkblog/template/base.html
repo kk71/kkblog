@@ -5,71 +5,33 @@
 	<meta charset="utf-8"/>
 	<meta name="description" content="kkblog based on django1.7">
 	<meta name="author" content="kK">
-	<link rel="shortcut icon" href="/static/jungleland/icon.jpg">
+	<link rel="shortcut icon" href="${staticPrefix}jungleland/icon.jpg">
 	<title>${title}</title>
 
 	<!--jungleland css style-->
-	<link rel="stylesheet" type="text/css" media="screen" href="{staticPrefix}jungleland/css/style.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="${staticPrefix}jungleland/css/style.css"/>
 
 	<!--jquery2 and plugins-->
-	<script type="text/javascript" src="{staticPrefix}jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="{staticPrefix}jquery/jquery.backtotop.js"></script>
-	<script type="text/javascript" src="{staticPrefix}jquery/jquery.cookie.js"></script>
+	<script type="text/javascript" src="${staticPrefix}jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="${staticPrefix}jquery/jquery.backtotop.js"></script>
+	<script type="text/javascript" src="${staticPrefix}jquery/jquery.cookie.js"></script>
 
-	<!--self-defined js script-->
-	<script type="text/javascript" src="{staticPrefix}jungleland/kkblog.js"></script>
+    <script type="text/javascript" src="${staticPrefix}angularjs/angular.min.js"></script>
 
-	<!--bootstrap-->
-	<script type="text/javascript" src="{staticPrefix}jungleland/bootstrap-lite/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="{staticPrefix}jungleland/bootstrap-lite/bootstrap.min.css" />
+    <script type="text/javascript">
+    var staticPrefix="${staticPrefix}";
+    </script>
 
-	<!--syntax highlighter-->
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shCore.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushJScript.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushBash.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushCpp.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushCss.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushJava.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushPhp.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushPlain.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushPython.js"></script>
-	<script type="text/javascript" src="{staticPrefix}syntaxhighlighter/scripts/shBrushSql.js"></script>
-	<link type="text/css" rel="stylesheet" href="{staticPrefix}syntaxhighlighter/styles/shCoreMidnight.css"/>
-	<script type="text/javascript">SyntaxHighlighter.all();</script>
 
-	<script type="text/javascript" >
+    <!--self-defined js script-->
+    <script type="text/javascript" src="${staticPrefix}js/kkblog.js"></script>
 
-//json for music list when rendering the template
-//music_list:mapping of music name and url
-//music_names:array of music names
-var music_list=${music_list_json};
-var music_names=[];
-for(s in music_list)music_names.push(s);
-	</script>
 </head>
 
-<body id="top">
-<!-- msgbox and querybox
-============================================================================= -->
-
-<!--simple modal msgbox-->
-<div id="simple_modal" class="modal hide fade in" style="text-align:left;">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 id="simple_modal_caption" style="color:rgb(0,0,0);text-shadow:none;"></h3>
-  </div>
-  <div class="modal-body">
-    <p id="simple_modal_text" style="color:rgb(0,0,0);text-shadow:none;"></p>
-  </div>
-  <div class="modal-footer">
-    <button id="simple_modal_ok" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">确定</button>
-  </div>
-</div>
+<body id="top" ng-app="kkblogApp">
 
 <!--floating upper button-->
 <a href="javascript:;"><div class="go-up-button">上</div></a>
-
-<!--loading status demo-->
 
 
 <!-- header
@@ -77,68 +39,82 @@ for(s in music_list)music_names.push(s);
 <div id="header-wrap"><header>
 
         <hgroup>
-            <h1><a href="/">${config.ownerName}的博客</a></h1>
-            <h5>${config.subTitle}</h5>
+            <h1><a href="/">${config.getBrand()}</a></h1>
+            <h5>${config.subBrand}</h5>
         </hgroup>
 
 		<nav>
 		    <ul>
-		    	%if navbarActive==0:
+                %if navbarActive==0:
 			    <li id="current"><a href="/">主页</a><span></span></li>
 			    <li><a href="/category/">分类</a><span></span></li>
 			    <li><a href="/archive/">归档</a><span></span></li>
-			    <li><a href="/commentbox/">留言板</a><span></span></li>
+                <li><a href="/flatpage/">页面</a><span></span></li>
 			    <li><a href="/about/">关于</a><span></span></li>
-			    %elif navbarActive==1:
-			    <li><a href="/">主页</a><span></span></li>
-			    <li id="current"><a href="/category/">分类</a><span></span></li>
-			    <li><a href="/archive/">归档</a><span></span></li>
-			    <li><a href="/commentbox/">留言板</a><span></span></li>
-			    <li><a href="/about/">关于</a><span></span></li>
-			    %elif navbarActive==2:
-			    <li><a href="/">主页</a><span></span></li>
-			    <li><a href="/category/">分类</a><span></span></li>
-			    <li id="current"><a href="/archive/">归档</a><span></span></li>
-			    <li><a href="/commentbox/">留言板</a><span></span></li>
-			    <li><a href="/about/">关于</a><span></span></li>
-			    %elif navbarActive==3:
-			    <li><a href="/">主页</a><span></span></li>
-			    <li><a href="/category/">分类</a><span></span></li>
-			    <li><a href="/archive/">归档</a><span></span></li>
-			    <li id="current"><a href="/commentbox/">留言板</a><span></span></li>
-			    <li><a href="/about/">关于</a><span></span></li>
-			    %elif navbarActive==4:
-			    <li><a href="/">主页</a><span></span></li>
-			    <li><a href="/category/">分类</a><span></span></li>
-			    <li><a href="/archive/">归档</a><span></span></li>
-			    <li><a href="/commentbox/">留言板</a><span></span></li>
-			    <li id="current"><a href="/about/">关于</a><span></span></li>
-			    %else:
-			    <li><a href="/">主页</a><span></span></li>
-			    <li><a href="/category/">分类</a><span></span></li>
-			    <li><a href="/archive/">归档</a><span></span></li>
-			    <li><a href="/commentbox/">留言板</a><span></span></li>
-			    <li><a href="/about/">关于</a><span></span></li>
-			    %endif
+                %elif navbarActive==1:
+                <li><a href="/">主页</a><span></span></li>
+                <li id="current"><a href="/category/">分类</a><span></span></li>
+                <li><a href="/archive/">归档</a><span></span></li>
+                <li><a href="/flatpage/">页面</a><span></span></li>
+                <li><a href="/about/">关于</a><span></span></li>
+                %elif navbarActive==2:
+                <li><a href="/">主页</a><span></span></li>
+                <li><a href="/category/">分类</a><span></span></li>
+                <li id="current"><a href="/archive/">归档</a><span></span></li>
+                <li><a href="/flatpage/">页面</a><span></span></li>
+                <li><a href="/about/">关于</a><span></span></li>
+                %elif navbarActive==3:
+                <li><a href="/">主页</a><span></span></li>
+                <li><a href="/category/">分类</a><span></span></li>
+                <li><a href="/archive/">归档</a><span></span></li>
+                <li id="current"><a href="/flatpage/">页面</a><span></span></li>
+                <li><a href="/about/">关于</a><span></span></li>
+                %elif navbarActive==4:
+                <li><a href="/">主页</a><span></span></li>
+                <li><a href="/category/">分类</a><span></span></li>
+                <li><a href="/archive/">归档</a><span></span></li>
+                <li><a href="/flatpage/">页面</a><span></span></li>
+                <li id="current"><a href="/about/">关于</a><span></span></li>
+                %else:
+                <li><a href="/">主页</a><span></span></li>
+                <li><a href="/category/">分类</a><span></span></li>
+                <li><a href="/archive/">归档</a><span></span></li>
+                <li><a href="/flatpage/">页面</a><span></span></li>
+                <li><a href="/about/">关于</a><span></span></li>
+                %endif
 		    </ul>
 	    </nav>
 
         <div class="subscribe">
+            %if config.ownerWeibo:
         	<a href="${config.ownerWeibo}" target="_blank">
-            	<img data-toggle="tooltip" data-placement="bottom" title="" data-original-title="微博" src="${staticPrefix}sns_icons/sina_32.png">
+            	<img title="微博" src="${staticPrefix}sns_icons/sina_32.png">
             </a>
+            %endif
+            %if config.ownerTwitter:
         	<a href="${config.ownerTwitter}" target="_blank">
-        		<img data-toggle="tooltip" data-placement="bottom" title="" data-original-title="推特" src="${staticPrefix}sns_icons/twitter_32.png">
+        		<img title="Twitter" src="${staticPrefix}sns_icons/twitter_32.png">
             </a>
+            %endif
+            %if config.ownerGithub:
+            <a href="${config.ownerGithub}" target="_blank">
+                <img title="GitHub" src="${staticPrefix}sns_icons/github_32.png">
+            </a>
+            %endif
+            %if config.ownerGoogle:
+            <a href="${config.ownerGoogle}" target="_blank">
+                <img title="Google" src="${staticPrefix}sns_icons/google_32.png">
+            </a>
+            %endif
         	<a href="/rss/" target="_blank">
-        		<img data-toggle="tooltip" data-placement="bottom" title="" data-original-title="RSS" src="${staticPrefix}sns_icons/rss_32.png">
+        		<img title="RSS" src="${staticPrefix}sns_icons/rss_32.png">
             </a>
         </div>
 
-        <form id="quick-search" action="/" method="get">
+        <form id="quick-search" action="/search/" method="get">
             <fieldset class="search">
                 <label for="qsearch">搜索博文：</label>
-                <input class="tbox" id="qsearch" type="text" name="qsearch" placeholder="搜索博文" title="" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="搜索博文" />
+                <input class="tbox" id="qsearch" type="text" name="keywords" placeholder="搜索博文" title=""/>
                 <button class="searchbtn" id="search_for"></button>
             </fieldset>
         </form>
@@ -155,11 +131,12 @@ for(s in music_list)music_names.push(s);
 
     <!-- main -->
     <section id="main">
-    <%block name="contentBody"/>
+        <%block name="contentBody"/>
     </section>
 
     <!-- sidebar -->
     <aside id="sidebar">
+                %if categoryList:
 				<div class="sidemenu">
 					<h3>分类</h3>
 					<ul>
@@ -168,34 +145,36 @@ for(s in music_list)music_names.push(s);
 						%endfor
 					</ul>
 				</div>
+                %endif
 
+                %if tagList:
 				<div class="sidemenu">
 					<h3>标签</h3>
                     <ul>
 				    %for i in tagList:
                         <a href="${i.getUrl()}">
-                            <span class="label label-${random_tag_color()}">${i.name}</span>
+                            <span class="tag tag-${i.randomTagColor()}">${i.name}</span>
                         </a>
                     %endfor
                     </ul>
 				</div>
+                %endif
 
+                %if hotList:
 				<div class="sidemenu">
-					<h3>热门点击</h3>
+					<h3>点击</h3>
 					<ul>
 						%for i in hotList:
-						<li><a href="${i.getUrl()}">${i["title"]}
-                            <span>${i.accessFrequency}次查看, 时间:${i.createDatetime.year}.${i["datetime"].month}.${i["datetime"].day}, 分类:${i["category_key"]["name"]}</span>
+						<li><a href="${i.getUrl()}">${i.title}
+                            <span>${i.accessFrequency}次查看, 时间:${i.createDatetime.year}.${i.createDatetime.month}.${i.createDatetime.day}, 分类:${i.category.name}</span>
                         </a></li>
                         %endfor
 					</ul>
 				</div>
+                %endif
 
-				<div class="sidemenu" 
-				%if len(musicList)==0:
-					style="display:none;"
-				%endif
-				>
+                <%doc>
+				<div class="sidemenu">
 					<a href="javascript:;"><span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="点此禁用" id="no-auto-play" class="badge badge-success" style="display:none;float:right;z-index:99;">自动播放</span></a>
 					<a href="javascript:;"><span data-toggle="tooltip" data-placement="bottom" title="" data-original-title="点此启用" id="auto-play" class="badge badge-important" style="display:none;float:right;z-index:99;">自动播放已禁用</span></a>
 					<h3>音乐盒子</h3>
@@ -204,24 +183,25 @@ for(s in music_list)music_names.push(s);
 						
 					</ul>
 				</div>
+                </%doc>
 
-				%if weibo_box!="" and weibo_box!=None:
+				%if config.ownerWeiboBox!="" and config.ownerWeiboBox!=None:
 				<div class="sidemenu">
 					<h3>博主微博</h3>
                     <ul>
                     	${config.ownerWeiboBox}
                     </ul>
-
 				</div>
 				%endif
 
+                %if config.qrCodeImage:
 				<div class="sidemenu">
 					<h3>QR码</h3>
                     <ul>
                     	<img src="${config.qrCodeImage}">
                     </ul>
 				</div>
-
+                %endif
 	<!-- /sidebar -->
 	</aside>
 
@@ -232,13 +212,25 @@ for(s in music_list)music_names.push(s);
 <div id="extra-wrap"><div id="extra" class="clearfix">
 
     <div class="xcol">
-		    <h3>联系博主</h3>
-            <p><strong>E-mail: </strong>${email_addr}</p>
+            %if config.getSafeOwnerEmail():
+            <h3>联系博主</h3>
+            <p><strong>E-mail: </strong>${config.getSafeOwnerEmail()}</p>
+            %endif
             <h3>社交平台</h3>
 	        <div class="footer-list social">
 			    <ul>
+                    %if config.ownerWeibo:
 			    	<li class="weibo"><a href="${config.ownerWeibo}" target="_blank">微博</a></li>
+                    %endif
+                    %if config.ownerTwitter:
 				    <li class="twitter"><a href="${config.ownerTwitter}" target="_blank">推特</a></li>
+                    %endif
+                    %if config.ownerGithub:
+                    <li class="github"><a href="${config.ownerGithub}" target="_blank">GitHub</a></li>
+                    %endif
+                    %if config.ownerGoogle:
+                    <li class="googleplus"><a href="${config.ownerGoogle}" target="_blank">Google</a></li>
+                    %endif
 				    <li class="rss"><a href="/rss/" target="_blank">RSS</a></li>
 			    </ul>
 		    </div>
@@ -251,31 +243,33 @@ for(s in music_list)music_names.push(s);
 				    <li><a href="/">主页</a></li>
 				    <li><a href="/category/">分类</a></li>
 				    <li><a href="/archive/">归档</a></li>
-				    <li><a href="/commentbox/">留言板</a></li>
+                    <li><a href="/flatpage/">页面</a></li>
                     <li><a href="/about/">关于</a></li>
 			    </ul>
 		    </div>
     </div>
 
     <div class="xcol">
-            <h3>友情链接</h3>
+            <h3>友链</h3>
 	        <div class="footer-list">
 			    <ul>
 			    	%for i in friendList:
-				    <li><a href="${i}" target="_blank">${friendList[i]}</a></li>
+				    <li><a href="${i.url}" target="_blank">${i.name}</a></li>
 				    %endfor
 			    </ul>
 		    </div>
 	</div>
 
+    % if config.ownerBriefSelfIntro or config.getSafeOwnerEmail():
     <div class="xcol last">
-        <h3>关于博主</h3>
+        <h3>关于</h3>
         <p>
-        	<a><img width="40" height="40" class="align-left" alt="owner icon" src="${config.ownerIcon}"/></a>
+        	<a><img width="40" height="40" class="align-left" alt="owner icon" src="${config.getOwnerIcon()}"/></a>
         	${config.ownerBriefSelfIntro}
         	<a href="/about/">更多…</a>
         </p>
     </div>
+    %endif
 
 </div></div>
 
@@ -283,7 +277,8 @@ for(s in music_list)music_names.push(s);
 ============================================================================== -->
 <footer class="clearfix">
 	<p class="footer-left">
-		kKBlog0.5 powered by <a href="http://www.python.org/" target="_blank">Python3</a> + <a href="https://www.djangoproject.com/" target="_blank">Django1.7</a> , feel free to fork it at <a href="https://github.com/kk71/kkblog" target="_blank">Github</a>
+		Powered by <a href="https://www.python.org/" target="_blank">Python3</a> + <a href="https://www.djangoproject.com/" target="_blank">Django1.7</a> +
+        <a href="https://angularjs.org/" target="_blank">AngularJS</a> , feel free to fork it at <a href="https://github.com/kk71/kkblog" target="_blank">Github</a>
 	</p>
 
 	<p class="footer-right">
@@ -295,4 +290,24 @@ for(s in music_list)music_names.push(s);
 </footer>
 
 </body>
+
+<!-- sweet alert to replace the default alert box -->
+<script type="text/javascript" src="${staticPrefix}sweet-alert/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="${staticPrefix}sweet-alert/sweet-alert.css">
+
+
+<!--syntax highlighter-->
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushCpp.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushCss.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushJava.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushPlain.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushPython.js"></script>
+<script type="text/javascript" src="${staticPrefix}syntaxhighlighter/scripts/shBrushSql.js"></script>
+<link type="text/css" rel="stylesheet" href="${staticPrefix}syntaxhighlighter/styles/shCoreMidnight.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
 </html>
