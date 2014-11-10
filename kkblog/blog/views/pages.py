@@ -70,6 +70,7 @@ def flatPage(request,slug=""):
         showLinkToOriginal=False
         try:
             ls=Paginator([models.flatPage.objects.get(slug=slug)],per_page=1)
+            if not ls.object_list[0].shown:raise Exception()
         except:
             return HttpResponseNotFound()
     else:

@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.utils import timezone
 from django.contrib import admin
+import django.db.models
+import django.forms
 from django.utils.timezone import template_localtime
 
 from . import models
@@ -57,7 +59,7 @@ class commentAdmin(admin.ModelAdmin):
                     "website", "ipAddress", "shown", "read","article","parent")
     ordering = ("-datetime",)
     list_filter = ("read", "shown")
-    readonly_fields = ("parent","article","nickname","website","email","message","ipAddress","datetime")
+    readonly_fields = ("parent","article")
     actions = ("markReadShown","markRead","show","hide")
 
     def markReadShown(self,request,queryset):

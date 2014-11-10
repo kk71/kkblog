@@ -1,6 +1,8 @@
+import html
+
 from django.http import JsonResponse,HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.http import require_GET, require_POST
-import html
+from django.utils import timezone
 from . import models
 
 try:
@@ -78,7 +80,8 @@ def postComment(request):
         parent=parent,
         article=article,
         ipAddress=request.META["REMOTE_ADDR"],
-        shown=not config.commentVerify
+        shown=not config.commentVerify,
+        datetime=timezone.now()
     )
     newComment.save()
     return JsonResponse({"error":0})

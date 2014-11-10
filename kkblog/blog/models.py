@@ -26,7 +26,6 @@ class config(models.Model):
 
     ownerName=models.CharField(max_length=19,verbose_name="博主名")
     ownerBriefSelfIntro=models.CharField(max_length=999,blank=True,verbose_name="博主简介")
-    ownerPhoto=FileBrowseField(max_length=99,blank=True,verbose_name="博主照片")
     ownerIcon=FileBrowseField(max_length=99,blank=True,verbose_name="博主头像")
     ownerSelfIntro=models.ForeignKey("flatPage",related_name="self_intro",verbose_name="自我介绍")
 
@@ -121,20 +120,23 @@ class comment(MPTTModel):
     shown = models.BooleanField(default=False, verbose_name="显示")
     read = models.BooleanField(default=False, verbose_name="已读")
     ipAddress = models.IPAddressField(verbose_name="IP地址")
+    byOwner = models.BooleanField(default=False,verbose_name="博主自己的评论")
+    # TODO: 之后将加上判断是不是博主的回复。将特殊对待。
+    # TODO: 另外还需在admin界面中加入回复页。
 
     nickname = models.CharField(max_length=39, verbose_name="昵称")
     website = models.URLField(blank=True, verbose_name="网站")
     email = models.EmailField(blank=True, verbose_name="Email")
-    datetime = models.DateTimeField(verbose_name="时间",auto_now_add=True)
+    datetime = models.DateTimeField(verbose_name="时间")
     message = models.TextField(max_length=999999, verbose_name="内容")
 
     parent = TreeForeignKey(
-        "self",related_name="children", blank=True, verbose_name="父评论")
+        "self",related_name="children",null=True, blank=True, verbose_name="父评论")
     article = models.ForeignKey(
-        "article", related_name="comments",blank=True, verbose_name="引用博文")
+        "article", related_name="comments", verbose_name="引用博文")
 
     def __str__(self):
-        return "%s,%s,%s" % (self.nickname, self.message ,self.article)
+        return "【评论%s】%s" % (self.id,self.nickname)
 
     def reply(self,nickname,message,website="",email=""):
         '''
@@ -155,6 +157,7 @@ class comment(MPTTModel):
             "email":self.email,
             "datetime":template_localtime(self.datetime).strftime("%Y-%m-%d,%H-%M-%S"),
             "message":self.message,
+            "byOwner":self.byOwner,
             "parent":None,
             "article":self.article.id
         }
@@ -208,7 +211,7 @@ class article(models.Model):
         default=399, verbose_name="展示长度")
     createDatetime = models.DateTimeField(verbose_name="创建时间",blank=True,help_text="如果不给出，将自动创建。")
     editDatetime=models.DateTimeField(verbose_name="最后修改时间",auto_now=True,help_text="自动生成。")
-    tags = models.ManyToManyField("tag",related_name="articles", blank=True, verbose_name="标签")
+    tags = models.ManyToManyField("tag",related_name="articles",null=True, blank=True, verbose_name="标签")
     category = models.ForeignKey("category",related_name="articles", verbose_name="分类")
     archive = models.ForeignKey("archive",related_name="articles",blank=True,null=True,verbose_name="归档",
                                 help_text="如果不给出，将自动创建。")

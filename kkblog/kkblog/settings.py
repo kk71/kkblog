@@ -66,7 +66,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "kkblog",
         "USER":"root",
-        "PASSWORD":"fkbillnkcfd91C++",
+        "PASSWORD":"fkcomputerbill",
     }
 }
 
